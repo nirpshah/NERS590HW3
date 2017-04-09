@@ -1,0 +1,97 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+
+<simulation name="problem 4b" type="fixed source">
+  <histories start="1" end="10000000" />
+</simulation>
+
+<distributions>
+	<shell      name="pos dist"           datatype="point"  r1 = "1.0" r2 = "2.0"/>
+	<isotropic  name="dir dist"           datatype="point"/>
+	<linear   	name="linear scatter"     datatype="double" a="-1.0"  b="1.0" fa="0.0" fb="1.0"/>
+	<uniform    name="isotropic scatter"  datatype="double" a="-1.0"  b="1.0" />
+	<delta      name="energy dist"        datatype="double" a="1.0" />
+  <delta      name="time dist"          datatype="double" a="0.0" />
+</distributions>
+
+<nuclides>
+	<nuclide name="nuc1" A="0.0"> 
+		<capture xstype="constant" xs="1.0"/>
+		<scatter xstype="constant" xs="19.0" distribution="linear scatter"/>
+	</nuclide>
+	<nuclide name="nuc2" A="0.0">
+		<capture xstype="constant" xs="1.0"/>
+		<scatter xstype="constant" xs="4.0" distribution="isotropic scatter"/>
+	</nuclide>
+	<nuclide name="nuc3" A="0.0">
+		<capture xstype="constant" xs="59.0"/>
+		<scatter xstype="constant" xs="1.0" distribution="isotropic scatter"/>
+	</nuclide>
+    <nuclide name="nuc4" A="0.0">
+		<capture xstype="constant" xs="1.0"/>
+		<scatter xstype="constant" xs="1.0" distribution="isotropic scatter"/>
+	</nuclide>
+</nuclides>
+
+<materials>
+	<material  name="mat1" density="0.1">
+		<nuclide name="nuc1" frac="0.666666666666667"/>
+		<nuclide name="nuc2" frac="0.333333333333333"/>
+	</material>
+	<material name="mat2" density="0.005">
+		<nuclide name="nuc3" frac="1.0"/>
+	</material>
+	<material name="mat3" density="2.22045e-15">
+		<nuclide name="nuc4" frac="1.0"/>
+	</material>
+</materials>
+
+<surfaces>
+  <plane 	    name="px1" 	  a="1.0" b="0.0" c="0.0" d="14.0"/>
+  <plane 	    name="px2" 	  a="1.0" b="0.0" c="0.0" d="19.0"/>
+  <sphere 	  name="sph1"   a="0.0" b="0.0" c="0.0" d="4.0"/>
+  <xcylinder  name="cyl1"   a="0.0" b="0.0" c="0.5"/>
+  <sphere 	  name="sph2"   a="0.0" b="0.0" c="0.0" d="25.0"/>
+</surfaces>
+
+<cells>
+  <cell name="sphere_source" material="mat1">
+    <surface name="sph1" sense="-1"/>
+  </cell>
+  <cell name="detector" material="mat2" importance = "1.0">
+    <surface name="cyl1" sense="-1"/>
+	  <surface name="px1"  sense="+1"/>
+	  <surface name="px2"  sense="-1"/>
+  </cell>
+  <cell name="vacuum1" material="mat3">
+    <surface name="sph1" sense="+1"/>
+	  <surface name="px1"  sense="-1"/>
+	  <surface name="sph2" sense="-1"/>
+  </cell>
+  <cell name="vacuum2" material="mat3">
+    <surface name="cyl1" sense="+1"/>
+	  <surface name="px1"  sense="+1"/>
+	  <surface name="px2"  sense="-1"/>
+	  <surface name="sph2"  sense="-1"/>
+  </cell>  
+  <cell name="vacuum3" material="mat3" importance="0.0">
+    <surface name="px2"  sense="+1"/>
+    <surface name="sph2" sense="-1"/>
+  </cell>
+  <cell name="vacuum4" material="mat3" importance="0.0">
+	  <surface name="sph2" sense="+1"/>
+  </cell> 
+</cells>
+
+<estimators>
+  <pathLengthReactionRate name="absorption rate" volume="1.0" reactionname="capture">
+    <cell name="detector"/>
+  </pathLengthReactionRate>
+</estimators>
+
+<source>
+  <position  distribution="pos dist"/>
+  <direction distribution="dir dist"/>
+  <energy    distribution="energy dist"/>
+  <time      distribution="time dist"/>
+</source>
+

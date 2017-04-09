@@ -1,0 +1,85 @@
+Summary:
+  Added energy dependent XS. Added energy and time attribute to particle.
+  Added two xs options: "constant" and "equation"
+  Fixed reaction rate estimator to use the reaction name and make it more clear and general.
+  
+
+Particle Class
+  General
+    Added a function called speed() that returns the speed of the particle. This assumes the particle is a neutron. Non relativistic. Units of cm/ns.
+    
+  Energy
+    Added energy as an attribute.
+    It is held as a double. It is in units of MeV.
+    The getter function is energy().
+    Modified the constructor to force the code to give it a energy attribute as an input.
+    Did not modify scatter to change the energy.
+    
+  Time
+    Added time as an attribute. 
+    It is held as a double. It is in units of ns.
+    The getter function is time(). 
+    Modified the constructor to force the code to give it a time attribute as an input. 
+  
+  Forward declaration of nuclide.
+Source Class
+  Gave the source class the energy distribution and time distribution
+  
+Reaction Class
+  Make sure that when the reaction class makes particles, it gives them an energy and time.
+  For fission, a energy distribution was added and the time is set to the time of the collision.
+  Reaction class has changed entirely. 
+    To the reaction parent class, I added a string called xs_type that tells us what type of XS we are using. 
+      The options are "constant" and "equation". 
+      Eventually, table will be added to that list. 
+    Instead of the function xs(), now we have xs(particle* p) so that we can get the energy.
+  The function sample(particle, bank) has been changed to sample(particle, bank, nuclide).
+  Forward declaration of particle and nuclide.
+    
+Material Class
+  Changed the micro and macro XS functions so that they require the particle pointer.
+  The micro and macro xs functions were overloaded so that they require a std::string of the reaction name.
+  
+Nuclide Class
+  Changed the micro and macro XS functions so that they require the particle pointer.
+  Added two attributes A and alpha. And getter functions for A and alpha. If A is zero, that means the problem is not energy dependent. 
+  The xs function was overloaded so that it requires a std::string of the reaction name.
+  
+  
+Cell Class
+  Changed the micro and macro XS functions so that they require the particle pointer.
+  
+Estimator Class
+  Changed the micro and macro XS functions so that they require the particle pointer.
+  Reaction name was added as an attribute for the pathLengthReactionRate
+  
+Simulation Class
+  Changed the micro and macro XS functions so that they require the particle pointer.
+  
+XML Input
+  Updated XML files to have time and energy in source and fission reaction.
+  Updated XML read in to make sure time and energy inputs work.
+  Updated XML read in to allow for energy dependent reactions.
+  Even though the source and the fission reaction use the same energy distribution, you have to make separate ones......this took me hours to figure out. HOURS!
+  The pathLengthFlux type in the estimators in XML has the wrong estimator created. From cell_pathLengthReactionRate_estimator it was changed to cell_pathLengthFlux_estimator.
+  The pathLenghReactionRate estimator xml read in was changed to include reaction_name read in.
+
+  
+
+
+
+
+Solutions:
+problem_1a.xml Transmission:    0.0125833
+problem_1b.xml Transmission:    0.0183025
+problem_2a.xml Transmission:    0.0417199
+problem_2b.xml Transmission:    0.0633666
+problem_3a.xml Transmission:    1.08818    Variance: 1.71238
+problem_3b.xml Transmission:    1.08740    Variance: 2.09683
+problem_4a.xml Absorption Rate: 7.60205e-5
+problem_4b.xml Absorption Rate: 9.86123e-5
+problem_4c.xml Absorption Rate: 3.92842e-5
+problem_5.xml  Absorption Rate: 8.95078e-9
+  
+  
+ 
