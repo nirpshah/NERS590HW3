@@ -111,4 +111,16 @@ public:
     point  reflect( ray r );
 };
 
+class xcone : public surface {
+private:
+	double x0, y0, z0, R;
+public:
+	xcone( std::string label, double p1, double p2, double p3, double p4) : 
+		surface(label), x0(p1),  y0(p2), z0(p3), R(p4) {};
+	~xcone() {};
+	double eval( point p );
+    double distance( ray r );
+    point  reflect( ray r );
+};
+
 #endif

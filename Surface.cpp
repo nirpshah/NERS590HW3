@@ -3,7 +3,7 @@
 #include <cassert>
 
 #include "Point.h"
-#include "Utility.h"
+#include "QuadSolver.h"
 #include "Surface.h"
 
 // evaluates the surface equation w.r.t. to point p
@@ -140,3 +140,36 @@ point zcylinder::reflect( ray r ) {
    double t = 2.0 * ( q.x * u.x  +  q.y * u.y  +  q.z * u.z ) / ( rad*rad );
    return point( u.x - q.x * t,  u.y - q.y * t,  u.z - q.z * t );
 }
+
+// for xcone ////////////////////////////////////////////////////////////////////////
+double xcone::eval( point p ) {
+  return -R*std::pow( p.x - x0, 2 ) + std::pow( p.y - y0, 2 ) + std::pow( p.z - z0, 2 );
+}
+
+double xcone::distance( ray r ) {
+  point p = r.pos;
+  point u = r.dir;
+
+  // difference between each coordinate and current point
+  point q( p.x - x0, p.y - y0, p.z - z0 );
+
+  // put into quadratic equation form: a*s^2 + b*s + c = 0
+  double a = - R * R * u.x * u.x + u.y * u.y + u.z * u.z;
+  double b = 2.0 * ( - R * R * q.x * u.x  +  q.y * u.y  +  q.z * u.z );
+  double c = eval( p );
+
+  return quad_solve( a, b, c );
+}
+
+point xcone::reflect( ray r ) {
+   assert( std::fabs( eval( r.pos ) ) < std::numeric_limits<float>::epsilon() );
+
+   point p = r.pos;
+   point u = r.dir;
+
+   point q( p.x - x0, p.y - y0, p.z - z0 );
+
+   double t = 2.0 * ( q.x * u.x  +  q.y * u.y  +  q.z * u.z ) / ( R*R );
+   return point( u.x - q.x * t,  u.y - q.y * t,  u.z - q.z * t );
+}
+
