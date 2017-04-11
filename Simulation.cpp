@@ -5,7 +5,6 @@
 
 void simulation::transport(unsigned long long number_of_histories)
 {
-  double num_tracks = 0.0;
   double rel_error = 0.0;
   for (unsigned long long history = 0; history < number_of_histories; history++)
   {
@@ -18,7 +17,7 @@ void simulation::transport(unsigned long long number_of_histories)
     
       while (p.alive())
       {
-        num_tracks += 1.0;
+        num_tracks++;
         // find the cell the particle is in. You can use geometry::findCell. Again, not fast, but whatever
         p.recordCell(the_geometry->findCell(&p ));
         // Create exp distribution. We should create a function in exp distribution that allows us to update the lambda. This should make the code slightly faster. But then again, eh.
@@ -31,9 +30,8 @@ void simulation::transport(unsigned long long number_of_histories)
         // if collision first
         if (distance_to_collision < surface_pair.second)
         {
-          // move to collision spot, sample collision. Give any new particles their cell and push back to bank. Do estimator stuff here.
           p.cellPointer()->moveParticle(&p, distance_to_collision); // estimator stuff is done here
-          p.cellPointer()->sampleCollision(&p, &bank); // sampling and populating bank is done here
+          p.cellPointer()->sampleCollision(&p, &bank); // sampling and populating bank is done her
         }
         else // if surface intersect
         {
@@ -62,6 +60,13 @@ void simulation::transport(unsigned long long number_of_histories)
       e->endHistory();
     }
   }
-  for (auto e : estimators){ rel_error = e->relError(); }
-  std::cout << " figure of merit = " << 1.0/(rel_error*rel_error*num_tracks) << std::endl;
+  endSimulation();
+}
+
+void simulation::endSimulation()
+{
+  for (auto e : estimators)
+  { 
+    e->setNTracks(num_tracks);
+  }
 }

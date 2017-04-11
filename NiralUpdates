@@ -2,7 +2,10 @@ Summary:
   Added energy dependent XS. Added energy and time attribute to particle.
   Added two xs options: "constant" and "equation"
   Fixed reaction rate estimator to use the reaction name and make it more clear and general.
+  Made FOM broader
   
+Simulation Class
+  Now holds the number of tracks of the whole simulation and at the end of the simulation gives it to all of the estimators.
 
 Particle Class
   General

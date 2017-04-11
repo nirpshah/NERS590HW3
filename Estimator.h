@@ -18,11 +18,16 @@ class estimator {
     std::string estimator_name;
   protected:
     unsigned long long nhist;
+    unsigned long long ntracks;
   public:
-     estimator( std::string label ) : estimator_name(label) {};
+     estimator( std::string label ) : estimator_name(label) { nhist = 0; ntracks = 0;};
     ~estimator() {};
 
     virtual std::string name() final { return estimator_name; };
+    virtual void setNTracks(unsigned long long num_tracks) final 
+    { 
+      ntracks = num_tracks; 
+    } 
 
     virtual void score( particle* , double  ) = 0; // score at events
 
@@ -31,9 +36,10 @@ class estimator {
 
     void score( particle*, double, std::shared_ptr< material > ) {};
 
-    virtual void endHistory()       = 0; // closeout history
-    virtual void report()           = 0; // write results
-    virtual double relError()       = 0; // gets relative error for figure of merit
+    virtual void    endHistory()       = 0; // closeout history
+    virtual void    report()           = 0; // write results
+    virtual double  relError()         = 0; // gets relative error for figure of merit
+    
 };
 
 // derived class for simple estimators like current or scalar flux
@@ -65,7 +71,9 @@ class single_valued_estimator : public estimator {
      virtual void report() final {
        mean = tally_sum / nhist;
        var  = ( tally_squared / nhist - mean*mean ) / nhist;
+       double FOM  = 1.0/(relError()*relError()*ntracks);
        std::cout << name() << "   " << mean << "   " << std::sqrt( var ) / mean << std::endl;  
+       std::cout << "FOM: " << FOM << std::endl;
      };
      virtual double relError() final{
        mean = tally_sum / nhist;
