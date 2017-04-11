@@ -159,13 +159,24 @@
 					double r2 = d.attribute("r2").as_double();       
 					Dist = std::make_shared< shell_distribution> ( name, r1, r2 );
 				}
-				else if (type == "disk"){
+				else if (type == "zdisk"){
 					double x_center  = d.attribute("x").as_double(); 
 					double y_center  = d.attribute("y").as_double();   
 					double z_center  = d.attribute("z").as_double(); 
 					point p_center(x_center,y_center,z_center);
 					double disk_rad	 = d.attribute("rad").as_double();
-					Dist = std::make_shared< disk_distribution> ( name, p_center, disk_rad );
+					Dist = std::make_shared< zdisk_distribution> ( name, p_center, disk_rad );
+				}
+				else if (type == "xdisk"){
+					double x_center  = d.attribute("x").as_double(); 
+					double y_center  = d.attribute("y").as_double();   
+					double z_center  = d.attribute("z").as_double(); 
+					point p_center(x_center,y_center,z_center);
+					double disk_rad	 = d.attribute("rad").as_double();
+					Dist = std::make_shared< xdisk_distribution> ( name, p_center, disk_rad );
+				}
+				else if (type == "forwardPeak"){
+					Dist = std::make_shared< forwardpeak_distribution> ( name);
 				}
 				else {
 					std::cout << "unsupported " << data << " distribution of type " << type << std::endl;
@@ -358,6 +369,13 @@
 			double      b    = s.attribute("b").as_double();
 			double      c    = s.attribute("c").as_double();
 			S = std::make_shared< zcylinder > ( name, a, b, c);
+		} else if (type == "xcone"){
+			std::string name = s.attribute("name").value();
+			double      x_0  = s.attribute("x0").as_double();
+			double      y_0  = s.attribute("y0").as_double();
+			double      z_0  = s.attribute("z0").as_double();
+			double      R_in = s.attribute("R").as_double();
+			S = std::make_shared< xcone > ( name, x_0, y_0, z_0, R_in);
 		}
 		else {
 			std::cout << " unkown surface type " << type << std::endl;
@@ -557,3 +575,10 @@
 		throw;
 	
 	}
+	
+	// create simulation
+	pugi::xml_node input_simulation 		= input_file.child("simulation");
+	pugi::xml_node input_histories  		= input_simulation.child("histories");
+	unsigned long long N_start   			= input_histories.attribute("start").as_int();
+	unsigned long long number_of_histories 	= input_histories.attribute("end").as_int();
+	

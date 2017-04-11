@@ -195,17 +195,41 @@ public:
     point sample();
 };
 
-class disk_distribution: public distribution<point> {
+class zdisk_distribution: public distribution<point> {
 private:
     point disk_center;
 	double radius;
 	const double twopi = 2.0 * std::acos(-1.0);
  public:
-    disk_distribution(std::string label, point center_in, double rad_in) :
+    zdisk_distribution(std::string label, point center_in, double rad_in) :
 		distribution(label), disk_center (center_in), radius (rad_in) {};
 	
-    ~disk_distribution() {};
+    ~zdisk_distribution() {};
 
+    point sample();
+};
+
+class xdisk_distribution: public distribution<point> {
+private:
+    point disk_center;
+	double radius;
+	const double twopi = 2.0 * std::acos(-1.0);
+ public:
+    xdisk_distribution(std::string label, point center_in, double rad_in) :
+		distribution(label), disk_center (center_in), radius (rad_in) {};
+	
+    ~xdisk_distribution() {};
+
+    point sample();
+};
+
+class forwardpeak_distribution : public distribution<point> {
+  private:
+
+  public:
+     forwardpeak_distribution( std::string label) : 
+		distribution(label){};
+    ~forwardpeak_distribution() {};
     point sample();
 };
 

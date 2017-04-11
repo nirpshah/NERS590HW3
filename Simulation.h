@@ -24,7 +24,7 @@ class simulation
 
   public:
     simulation(geometry* in_geometry, std::vector<std::shared_ptr<estimator>> in_estimators, std::shared_ptr< source > in_src) : the_geometry(in_geometry), estimators(in_estimators), src(in_src) { num_tracks = 0;}
-    void transport(unsigned long long number_of_histories);
+    void transport(unsigned long long N_start, unsigned long long number_of_histories);
 };
 
 #endif

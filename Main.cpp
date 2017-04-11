@@ -32,14 +32,11 @@ int main() {
 	#include "ReadXMLFile.h"
 	
 	// the useful vectors are std::vector< std::shared_ptr<material> > materials; std::vector< std::shared_ptr< cell > > cells; std::vector< std::shared_ptr< estimator > > estimators; std::shared_ptr< source > src; 
-  
-  // this is just here to make it work for now
-  unsigned long long number_of_histories = 1e6;
-  
+    
   geometry the_geometry(cells);
   
   simulation the_simulation(&the_geometry, estimators, src);
-  the_simulation.transport(number_of_histories);
+  the_simulation.transport(N_start, number_of_histories);
   
   for (auto e : estimators)
   {
