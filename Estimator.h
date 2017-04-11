@@ -11,6 +11,7 @@
 #include "Particle.h"
 #include "Material.h"
 #include "Reaction.h"
+#include "Utility.h"
 
 // base estimator class
 class estimator {
@@ -119,8 +120,6 @@ class cell_pathLengthFlux_estimator : public single_valued_estimator {
 };
 
 // volume-averaged reaction rate in a cell
-// NOTE: CURRENT IMPLEMENTATION IS FOR ONLY THE FIRST NUCLIDE IN A MATERIAL, AND THE FIRST REACTION RATE IN THE NUCLIDE. 
-// NEEDS TO BE CHANGED TO BE MORE FLEXIBLE
 class cell_pathLengthReactionRate_estimator : public single_valued_estimator {
   private:
     double volume;
@@ -130,6 +129,40 @@ class cell_pathLengthReactionRate_estimator : public single_valued_estimator {
    ~cell_pathLengthReactionRate_estimator() {};
     
     void score( particle*, double );
+};
+
+// time binned detector response
+class cell_pathLengthTimeBin_estimator : public estimator {
+  private:
+    std::string reaction_name;
+    double binnum, binmin, binmax;
+  protected:
+    double binmesh;
+    std::vector<double> binpoints, tally_hist, tally_sum, tally_squared, mean, var;
+  public:
+    cell_pathLengthTimeBin_estimator( std::string label, std::string reaction_name_in, double nbin, double minbin, double maxbin ) : estimator(label), reaction_name(reaction_name_in), binnum(nbin), binmin(minbin), binmax(maxbin) {
+      binmesh = ( binmax - binmin ) / binnum;
+      binpoints.resize(binnum);
+      tally_hist.resize(binnum);
+      tally_sum.resize(binnum);
+      tally_squared.resize(binnum);
+      mean.resize(binnum);
+      var.resize(binnum);
+    for ( int i=0; i <= binnum-1; i++ ) {
+      binpoints[i] = ( i + 1 ) * binmesh; // creates an array of the uppoer bounds of each bin for sorting
+      tally_hist[i]    = 0.0;
+      tally_sum[i]     = 0.0;
+      tally_squared[i] = 0.0;
+      mean[i]          = 0.0;
+      var[i]           = 0.0;
+    }
+  };
+ ~cell_pathLengthTimeBin_estimator() {};
+  
+  void score( particle*, double );
+  void endHistory();
+  void report();
+  double relError(); // not implemented
 };
 
 #endif

@@ -43,12 +43,12 @@ void  fission_reaction::sample( particle* p, std::stack< particle >* bank, std::
   else {
     // bank all but last particle (skips if n = 1)
     for ( int i = 0 ; i < (n - 1) ; i++ ) {
-      particle q( p->pos(), isotropic->sample(), energy_dist->sample(), p->time() );
+      particle q( p->pos(), isotropic->sample(), energy_dist->sample(), p->current_time() );
       q.recordCell( p->cellPointer() );
       bank->push( q );
     }
     // set working particle to last one
-    particle q( p->pos(), isotropic->sample(), energy_dist->sample(), p->time() );
+    particle q( p->pos(), isotropic->sample(), energy_dist->sample(), p->current_time() );
     q.recordCell( p->cellPointer() );
     *p = q;
   }

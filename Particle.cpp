@@ -5,7 +5,7 @@
 #include "Random.h"
 
 // constructor for a new particle
-particle::particle( point p, point d, double e, double t ) : p_pos(p), p_dir(d), p_energy(e), p_time(t) {
+particle::particle( point p, point d, double e, double t ) : p_pos(p), p_dir(d), p_energy(e), p_current_time(t), p_past_time(0.0) {
   p_dir.normalize();
   exist = true;
   p_wgt = 1.0;
@@ -23,7 +23,8 @@ void particle::move( double s ) {
   p_pos.x += s * p_dir.x;
   p_pos.y += s * p_dir.y;
   p_pos.z += s * p_dir.z;
-  p_time  += s / speed();
+  p_past_time = p_current_time;
+  p_current_time  += s / speed();
 }
 
 // scatter particle given input direction cosine cos_t0 = mu0

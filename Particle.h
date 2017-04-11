@@ -13,7 +13,8 @@ class particle {
   private:
     point p_pos, p_dir;
     double p_energy; // units MeV
-    double p_time;   // units ns
+    double p_current_time;   // units ns
+    double p_past_time;      // units ns
     double p_wgt;
     bool   exist;
     std::shared_ptr< cell > p_cell;
@@ -26,7 +27,8 @@ class particle {
     point   pos()     { return p_pos; };    // return particle position
     point   dir()     { return p_dir; };    // return particle direction 
     double  energy()  { return p_energy; };
-    double  time()    { return p_time; };
+    double  current_time()    { return p_current_time; };
+    double  past_time()       { return p_past_time; };
     double  wgt()     { return p_wgt; };   // return particle weight
     bool    alive()   { return exist; };   // return particle state flag
     double  speed();

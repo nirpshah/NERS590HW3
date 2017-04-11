@@ -499,6 +499,27 @@
 				}
 			}
 		}
+		else if ( type == "pathLengthTimeBin" ) {
+			std::string reaction_name = e.attribute("reactionname").value();
+			double binnum = e.attribute("binnum").as_double();
+			double binmin = e.attribute("binmin").as_double();
+			double binmax = e.attribute("binmax").as_double();
+			Est = std::make_shared< cell_pathLengthTimeBin_estimator > ( name, reaction_name, binnum, binmin, binmax );
+
+			// get the cell
+			for ( auto s: e.children() ) {
+				if ( ( std::string ) s.name() == "cell" ) {
+					std::string name = s.attribute("name").value();
+					std::shared_ptr< cell > CellPtr = findByName ( cells, name );
+					if ( CellPtr ) {
+						CellPtr->attachEstimator ( Est );
+					}
+					else {
+						std::cout << " uhnknown cell label " << name << " in estimator " << e.attribute("name").value() << std::endl;
+					}
+				}
+			}
+		}
 		else {
 			std::cout << "unknown estimator type " << name << std::endl;
 			throw;

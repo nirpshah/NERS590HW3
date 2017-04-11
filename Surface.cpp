@@ -3,7 +3,7 @@
 #include <cassert>
 
 #include "Point.h"
-#include "QuadSolver.h"
+#include "Utility.h"
 #include "Surface.h"
 
 // evaluates the surface equation w.r.t. to point p
