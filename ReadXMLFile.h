@@ -581,4 +581,5 @@
 	pugi::xml_node input_histories  		= input_simulation.child("histories");
 	unsigned long long N_start   			= input_histories.attribute("start").as_int();
 	unsigned long long number_of_histories 	= input_histories.attribute("end").as_int();
+	double             max_time             = input_simulation.child("timecut").attribute("maxtime").as_double();
 	

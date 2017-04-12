@@ -36,6 +36,7 @@ int main() {
   geometry the_geometry(cells);
   
   simulation the_simulation(&the_geometry, estimators, src);
+  the_simulation.set_max_time(max_time);
   the_simulation.transport(N_start, number_of_histories);
   
   for (auto e : estimators)

@@ -8,6 +8,7 @@
 #include "Reaction.h"
 #include "Nuclide.h"
 #include "Material.h"
+#include "Simulation.h"
 
 // add a nuclide and atom fraction to the material
 void material::addNuclide( std::shared_ptr< nuclide > N, double frac ) { 
@@ -53,6 +54,13 @@ std::shared_ptr< nuclide > material::sample_nuclide(particle* p) {
     s += n.first->total_xs(p) * n.second;
     if ( s > u ) { return n.first; }
   }
+  for (auto n : nuclides ) 
+  {
+    std::cout << n.first->name() << std::endl;
+  }
+  std::cout << "Random: " << u << std::endl;
+  std::cout << "Total XS: " << s << std::endl;
+  std::cout << "Particle E: " << p->energy() << std::endl;
   assert( false ); // should never reach here
   return nullptr;
 }
