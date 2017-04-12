@@ -1,0 +1,121 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+
+<simulation name="problem 6" type="fixed source">
+  <histories start="1" end="100000000"/>
+  <timecut   maxtime="110.0"/>
+</simulation>
+
+<distributions>
+  <xdisk        name="pos dist"           datatype="point"  x = "-1.0"  y = "0.0" z = "0.0"  rad = "0.5"/>
+  <forwardPeak  name="dir dist"           datatype="point"/>
+  <linear       name="linear scatter"     datatype="double" a="-1.0"    b="1.0"   fa="0.2"   fb="0.8"/>
+  <uniform      name="isotropic scatter"  datatype="double" a="-1.0"    b="1.0" />
+  <delta        name="energy dist"        datatype="double" a="1.0" />
+  <delta        name="time dist"          datatype="double" a="0.0" />
+</distributions>
+
+<nuclides>
+  <nuclide name="nuc1" A="12.0"> 
+    <capture xstype="equation" a="0.0" b="0.1"/>
+    <scatter xstype="constant" xs="2.4" distribution="linear scatter"/>
+  </nuclide>
+  <nuclide name="nuc2" A="1.0">
+    <scatter xstype="equation" a="1.0" b="0.5" distribution="isotropic scatter"/>
+  </nuclide>
+</nuclides>
+
+<materials>
+  <material  name="mat1" density="0.1">
+    <nuclide name="nuc1" frac="1.0"/>
+  </material>
+  <material  name="mat2" density="0.1">
+    <nuclide name="nuc2" frac="1.0"/>
+  </material>
+  <material  name="vacm" density="2.22045e-15">
+		<nuclide name="nuc1" frac="1.0"/>
+	</material>
+</materials>
+
+<surfaces>
+  <plane 	    name="px1" 	  a="1.0"   b="0.0"   c="0.0"   d="-25.0"/>
+  <plane 	    name="px2" 	  a="1.0"   b="0.0"   c="0.0"   d="-20.0"/>
+  <plane 	    name="px3" 	  a="1.0"   b="0.0"   c="0.0"   d="-1.000000000001"/>
+  <plane 	    name="px4" 	  a="1.0"   b="0.0"   c="0.0"   d="20.0"/>
+  <plane 	    name="px5" 	  a="1.0"   b="0.0"   c="0.0"   d="25.0"/>
+  <xcylinder  name="cyl1"   a="0.0"   b="-10.0" c="0.5"/>
+  <xcone      name="cone1"  x0="3.0"  y0="0.0"  z0="0.0"  R="0.125"/>
+  <sphere     name="sph1"   a="0.0"   b="0.0"   c="0.0"   d="5.0"/>
+  <sphere     name="sph2"   a="0.0"   b="0.0"   c="0.0"   d="30.0"/>
+</surfaces>
+
+<cells>
+  <cell name="right source sphere" material="mat1" importance="1.0">
+    <surface name="sph1"  sense="-1"/>
+	  <surface name="px3"   sense="+1"/>
+  </cell>
+  <cell name="left source sphere" material="mat1" importance="1.0">
+    <surface name="sph1"  sense="-1"/>
+	  <surface name="px3"   sense="-1"/>
+	  <surface name="cone1" sense="+1"/>
+  </cell>
+  <cell name="cone hole" material="vacm" importance="1.0">
+    <surface name="sph1"  sense="-1"/>
+	  <surface name="px3"   sense="-1"/>
+	  <surface name="cone1" sense="-1"/>
+  </cell>
+  <cell name="middle gap" material="vacm" importance="1.0">
+    <surface name="sph1"  sense="+1"/>
+	  <surface name="sph2"  sense="-1"/>
+	  <surface name="px2"   sense="+1"/>
+	  <surface name="px4"   sense="-1"/>
+  </cell>
+  <cell name="left gap" material="vacm" importance="1.0">
+    <surface name="cyl1"  sense="+1"/>
+	  <surface name="px1"   sense="+1"/>
+	  <surface name="px2"   sense="-1"/>
+	  <surface name="sph2"  sense="-1"/>
+  </cell>
+  <cell name="right gap" material="vacm" importance="1.0">
+    <surface name="cyl1"  sense="+1"/>
+	  <surface name="px4"   sense="+1"/>
+	  <surface name="px5"   sense="-1"/>
+	  <surface name="sph2"  sense="-1"/>
+  </cell>
+  <cell name="left detector" material="mat2" importance="1.0">
+    <surface name="cyl1"  sense="-1"/>
+	  <surface name="px1"   sense="+1"/>
+	  <surface name="px2"   sense="-1"/>
+  </cell>
+  <cell name="right detector" material="mat2" importance="1.0">
+    <surface name="cyl1"  sense="-1"/>
+	  <surface name="px4"   sense="+1"/>
+	  <surface name="px5"   sense="-1"/>
+  </cell>
+  <cell name="far left gap" material="vacm" importance="0.0">
+    <surface name="px1"   sense="-1"/>
+	  <surface name="sph2"  sense="-1"/>
+  </cell>
+  <cell name="far right gap" material="vacm" importance="0.0">
+    <surface name="px5"   sense="+1"/>
+	  <surface name="sph2"  sense="-1"/>
+  </cell>
+  <cell name="outside universe" material="vacm" importance="0.0">
+	  <surface name="sph2"   sense="+1"/>
+  </cell>
+</cells>
+
+<estimators>
+  <pathLengthTimeBin name="left detector response" reactionname="scatter" binnum="20" binmin="0.0" binmax="100.0">
+    <cell name="left detector"/>
+  </pathLengthTimeBin>
+  <pathLengthTimeBin name="right detector response" reactionname="scatter" binnum="20" binmin="0.0" binmax="100.0">
+    <cell name="right detector"/>
+  </pathLengthTimeBin>
+</estimators>
+
+<source>
+  <position  distribution="pos dist"/>
+  <direction distribution="dir dist"/>
+  <energy    distribution="energy dist"/>
+  <time      distribution="time dist"/>
+</source>
