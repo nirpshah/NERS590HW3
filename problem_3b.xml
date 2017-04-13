@@ -2,6 +2,7 @@
 
 <simulation name="problem 3b" type="fixed source">
   <histories start="1" end="10000000" />
+  <timecut   maxtime="10000000000.0"/>
 </simulation>
 
 <distributions>

@@ -1,6 +1,6 @@
 exec    = a.out
 cc      = g++
-opt     = -g
+opt     = -O3
 cflags  = -std=c++11 $(opt)
 
 main    = Main.cpp

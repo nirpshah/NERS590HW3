@@ -55,7 +55,7 @@ public:
 	std::vector< std::shared_ptr<material> > getmaterials() {return materials;};
 	std::vector< std::shared_ptr< surface > > getsurfaces() {return surfaces;};
 	std::vector< std::shared_ptr< cell > > getcells() { return cells;};
-	std::vector< std::shared_ptr< estimator > > getestimators() {estimators;};
+	std::vector< std::shared_ptr< estimator > > getestimators() {return estimators;};
 	std::shared_ptr< source > getsrc() {return src;};  
 	unsigned long long getN_start(){return N_start;};
 	unsigned long long getnumber_of_histories(){return number_of_histories;};

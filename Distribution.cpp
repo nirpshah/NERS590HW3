@@ -1,5 +1,6 @@
 #include <string>
 #include <cmath>
+#include <iostream>
 
 #include "Distribution.h"
 #include "Point.h"

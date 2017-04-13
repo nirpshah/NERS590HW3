@@ -143,7 +143,7 @@ point zcylinder::reflect( ray r ) {
 
 // for xcone ////////////////////////////////////////////////////////////////////////
 double xcone::eval( point p ) {
-  return -R*std::pow( p.x - x0, 2 ) + std::pow( p.y - y0, 2 ) + std::pow( p.z - z0, 2 );
+  return -R*R*std::pow( p.x - x0, 2 ) + std::pow( p.y - y0, 2 ) + std::pow( p.z - z0, 2 );
 }
 
 double xcone::distance( ray r ) {

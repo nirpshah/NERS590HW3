@@ -1,6 +1,6 @@
 <?xml version = '1.0' encoding = 'UTF-8'?>
 
-<simulation name="problem 6" type="fixed source">
+<simulation name="problem 6a" type="fixed source">
   <histories start="1" end="100000000"/>
   <timecut   maxtime="100.0"/>
 </simulation>
@@ -40,7 +40,7 @@
 <surfaces>
   <plane 	    name="px1" 	  a="1.0"   b="0.0"   c="0.0"   d="-25.0"/>
   <plane 	    name="px2" 	  a="1.0"   b="0.0"   c="0.0"   d="-20.0"/>
-  <plane 	    name="px3" 	  a="1.0"   b="0.0"   c="0.0"   d="-1.000000000001"/>
+  <plane 	    name="px3" 	  a="1.0"   b="0.0"   c="0.0"   d="-1.00000000000001"/>
   <plane 	    name="px4" 	  a="1.0"   b="0.0"   c="0.0"   d="20.0"/>
   <plane 	    name="px5" 	  a="1.0"   b="0.0"   c="0.0"   d="25.0"/>
   <xcylinder  name="cyl1"   a="0.0"   b="-10.0" c="0.5"/>
