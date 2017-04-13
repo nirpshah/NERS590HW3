@@ -7,6 +7,7 @@
 
 #include "pugixml.hpp"
 #include "Distribution.h"
+#include "Estimator.h"
 #include "Reaction.h"
 #include "Nuclide.h"
 #include "Material.h"
@@ -15,34 +16,32 @@
 #include "Source.h"
 #include "Geometry.h"
 #include "Simulation.h"
+#include "InputData.h"
 
-// function that returns an item from a vector of objects of type T by name provided
-// the object class has a string and a method called name() allowing for it to be returned
-template< typename T >
-std::shared_ptr< T > findByName( std::vector< std::shared_ptr< T > > vec, std::string name ) {
-  for ( auto v : vec ) {
-    if ( v->name() == name ) { return v; }
-	
-  }
-
-  return nullptr;
-}
 
 int main() {
-	#include "ReadXMLFile.h"
 	
-	// the useful vectors are std::vector< std::shared_ptr<material> > materials; std::vector< std::shared_ptr< cell > > cells; std::vector< std::shared_ptr< estimator > > estimators; std::shared_ptr< source > src; 
-    
-  geometry the_geometry(cells);
-  
-  simulation the_simulation(&the_geometry, estimators, src);
-  the_simulation.set_max_time(max_time);
-  the_simulation.transport(N_start, number_of_histories);
-  
-  for (auto e : estimators)
-  {
-    e->report();
-  }
+	inputdata input;
+	input.ReadXMLFile();
+	std::vector< std::shared_ptr<material> > materials = input.getmaterials();
+	std::vector< std::shared_ptr< cell > > cells = input.getcells();
+	std::vector< std::shared_ptr< estimator > > estimators = input.getestimators();
+	std::shared_ptr< source > src = input.getsrc();
+	unsigned long long N_start = input.getN_start();
+	unsigned long long number_of_histories = input.getnumber_of_histories();
+	double             max_time = input.getmax_time();
+	    
+	  geometry the_geometry(cells);
+	  std::cout << "no error." << std::endl;
+	  std::cout << estimators.at(0)->name() << std::endl;
+	  simulation the_simulation(&the_geometry, estimators, src);
+	  the_simulation.set_max_time(max_time);
+	  the_simulation.transport(N_start, number_of_histories);
+	  
+	  for (auto e : estimators)
+	  {
+		e->report();
+	  }
   
 	
 	return 0;

@@ -49,26 +49,45 @@ void cell_pathLengthReactionRate_estimator::score( particle* p, double path_leng
 
   
 void cell_pathLengthTimeBin_estimator::score( particle* p, double path_length ) {
-  int binstart, binend;
-  binstart = bin_search( binpoints, p->past_time() );
-  binend   = bin_search( binpoints, p->current_time() );
-  double delt = p->current_time() - p->past_time();
-  double sigS = p->cellPointer()->getMaterial()->macro_xs(p, reaction_name);
-  
-  if ( binstart - binend == 0 ) { tally_hist[binend] += p->wgt() * path_length; } //only one bin
-  
-  else if ( binstart - binend == 1 ) { // part of one bin and part of the next bin only
-    tally_hist[binstart] += ( binpoints[binstart] - p->past_time() ) * p->wgt() * path_length * sigS / delt;
-    tally_hist[binend] += ( p->current_time() - binpoints[binstart] ) * p->wgt() * path_length * sigS / delt;
-  }
-  
-  else { // multiple bins; loop through interior bins as normal
-    tally_hist[binstart] += ( binpoints[binstart] - p->past_time() ) * p->wgt() * path_length * sigS / delt;
-    tally_hist[binend] += (p->current_time() - binpoints[binend-1] ) * p->wgt() * path_length * sigS / delt;
-    for ( int i = binstart+1; i < binend; i++ ) {
-      tally_hist[i] += binmesh * p->wgt() * path_length * sigS / delt;
-    }
-  }
+
+	
+	int binstart, binend;
+	binstart = bin_search( binpoints, p->past_time() );
+	binend   = bin_search( binpoints, p->current_time() );
+	double delt = p->current_time() - p->past_time();
+	double sigS = p->cellPointer()->getMaterial()->macro_xs(p, reaction_name);
+	double tcf = 1.0; // use tcf (time correction factor) to truncate the score for when 
+						// the time extends beyond 100 ns
+	
+	
+	if ( binstart - binend == 0 ) { 
+		if (p->current_time() > binmax){
+			tcf = (binmax - p->past_time())/(p->current_time() - p->past_time());
+		}
+	tally_hist[binend] += p->wgt() * path_length * sigS * tcf; 
+	} //only one bin
+
+	else if ( binstart - binend == 1 ) { // part of one bin and part of the next bin only
+		if (p->current_time() > binmax){
+			tcf = (binmax - binpoints[binnum - 2])/(p->current_time() - binpoints[binnum - 2]);
+		}
+		tally_hist[binstart] += ( binpoints[binstart] - p->past_time() ) * p->wgt() * path_length * sigS / delt;
+		tally_hist[binend] += ( p->current_time() - binpoints[binstart] ) * p->wgt() * path_length * sigS * tcf / delt;
+	}
+
+	else { // multiple bins; loop through interior bins as normal
+		if (p->current_time() > binmax){
+			tcf = (binmax - binpoints[binnum - 2])/(p->current_time() - binpoints[binnum - 2]);
+		}
+	
+		tally_hist[binstart] += ( binpoints[binstart] - p->past_time() ) * p->wgt() * path_length * sigS / delt;
+		tally_hist[binend] += (p->current_time() - binpoints[binend-1] ) * p->wgt() * path_length * sigS * tcf / delt;
+		for ( int i = binstart+1; i < binend; i++ ) {
+			tally_hist[i] += binmesh * p->wgt() * path_length * sigS / delt;
+		}		
+	}
+
+
 }
 
 void cell_pathLengthTimeBin_estimator::endHistory() {

@@ -36,9 +36,10 @@ void particle::scatter( double cos_t0, std::shared_ptr< nuclide > N ) {
   }
   else
   {
-    p_energy *= ((1 + N->alpha() + (1 - N->alpha())*cos_t0)/2); 
+    p_energy *= ((1 + N->alpha() + (1 - N->alpha())*cos_t0)/2);
+  // must change the direction vector to lab frame	
+	cos_t0 = (1+N->A() * cos_t0) / std::pow((1.0 + N->A()* N->A() + 2.0 * N->A() * cos_t0), 0.5);
   }
-  
   
   // sample a random azimuthal angle uniformly
   double azi = 2.0 * std::acos(-1.0) * Urand();
