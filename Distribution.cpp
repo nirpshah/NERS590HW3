@@ -23,6 +23,19 @@ double linear_distribution::sample() {
   
 }
 
+double cubic_distribution::sample(){
+	double mu, y, f;  
+
+  // rejection sampling to find mu (with respect to x axis)
+  // 1/3 efficient for problem 6
+  do {
+    mu = 2.0  * Urand() - 1.0;
+    y =  fmax* Urand();
+    f = c1*mu*mu*mu + c2*mu*mu + c3*mu  + c4;
+  } while ( y > f );
+  return mu;
+}
+
 double exponential_distribution::sample() { return -std::log( Urand() ) / lambda; }
 
 double normal_distribution::sample() 
@@ -138,36 +151,4 @@ point xdisk_distribution::sample(){
 	double dy 	= h * std::sin(azi);
 	point p(disk_center.x, disk_center.y + dy, disk_center.z + dz);
 	return p;
-}
-
-point forwardpeak_distribution::sample() {
-  double mu, y, f;  
-
-  // rejection sampling to find mu (with respect to x axis)
-  // 1/3 efficient
-  do {
-    mu = 2.0  * Urand() - 1.0;
-    y =  1.5* Urand();
-    f = (1.0 + std::pow((mu + 1.0), 3)) / 6.0;
-  } while ( y > f );
-  
-    // sample a random azimuthal angle uniformly
-  double azi = 2.0 * std::acos(-1.0) * Urand();
-  double cos_azi = std::cos(azi);
-  double sin_azi = std::sin(azi);
-  
-    // rotate the local particle coordinate system aligned along the incident direction
-  // to the global problem (x,y,z) coordinate system 
-
-  double sin_t0 = std::sqrt( 1.0 - mu * mu );
-
-  point q;
-
-    q.x = mu;
-    q.y = sin_azi  * sin_t0;
-    q.z = - cos_azi * sin_t0;
-
-	return q;
-  
-
 }

@@ -60,6 +60,14 @@
 					double a = d.attribute("a").as_double();
 					Dist = std::make_shared< HenyeyGreenstein_distribution > ( name, a );
 				}
+				else if ( type == "cubic" ) {
+					double fmax = d.attribute("fmax").as_double();
+					double c1 = d.attribute("c1").as_double();
+					double c2 = d.attribute("c2").as_double();
+					double c3 = d.attribute("c3").as_double();
+					double c4 = d.attribute("c4").as_double();
+					Dist = std::make_shared< cubic_distribution > ( name, fmax, c1, c2, c3, c4 );
+				}
 				else {
 					std::cout << "unsupported distribution with data type " << data << std::endl;
 					throw;
@@ -174,9 +182,6 @@
 					point p_center(x_center,y_center,z_center);
 					double disk_rad	 = d.attribute("rad").as_double();
 					Dist = std::make_shared< xdisk_distribution> ( name, p_center, disk_rad );
-				}
-				else if (type == "forwardPeak"){
-					Dist = std::make_shared< forwardpeak_distribution> ( name);
 				}
 				else {
 					std::cout << "unsupported " << data << " distribution of type " << type << std::endl;

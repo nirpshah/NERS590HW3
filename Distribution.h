@@ -98,6 +98,16 @@ class linear_distribution : public distribution<double> {
    double sample();
 };
 
+class cubic_distribution : public distribution<double> {
+  private:
+    double fmax,c1,c2,c3,c4;
+  public:
+    cubic_distribution( std::string label, double fmax_in, double c1_in, double c2_in, double c3_in, double c4_in)  
+      : distribution(label), fmax(fmax_in), c1(c1_in), c2(c2_in), c3(c3_in), c4(c4_in) {};
+   ~cubic_distribution() {};
+   double sample();
+};
+
 class exponential_distribution : distribution<double> {
   private:
     double lambda;
@@ -223,14 +233,6 @@ private:
     point sample();
 };
 
-class forwardpeak_distribution : public distribution<point> {
-  private:
 
-  public:
-     forwardpeak_distribution( std::string label) : 
-		distribution(label){};
-    ~forwardpeak_distribution() {};
-    point sample();
-};
 
 #endif

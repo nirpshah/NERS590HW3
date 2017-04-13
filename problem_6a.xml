@@ -2,12 +2,13 @@
 
 <simulation name="problem 6" type="fixed source">
   <histories start="1" end="100000000"/>
-  <timecut   maxtime="110.0"/>
+  <timecut   maxtime="100.0"/>
 </simulation>
 
 <distributions>
   <xdisk        name="pos dist"           datatype="point"  x = "-1.0"  y = "0.0" z = "0.0"  rad = "0.5"/>
-  <forwardPeak  name="dir dist"           datatype="point"/>
+  <cubic        name="ang source"         datatype="double" fmax="1.5" c1="0.16666666666667" c2="0.5" c3="0.5" c4="0.3333333333333"/>
+  <anisotropic  name="dir dist"           datatype="point"  u = "1.0" v = "0.0" w = "0.0" distribution="ang source" />
   <linear       name="linear scatter"     datatype="double" a="-1.0"    b="1.0"   fa="0.2"   fb="0.8"/>
   <uniform      name="isotropic scatter"  datatype="double" a="-1.0"    b="1.0" />
   <delta        name="energy dist"        datatype="double" a="1.0" />
